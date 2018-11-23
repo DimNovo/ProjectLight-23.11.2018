@@ -5,7 +5,7 @@
 //  Created by Dim on 23/11/2018.
 //  Copyright © 2018 Dmitry Novosyolov. All rights reserved.
 //
-
+import AVFoundation
 import UIKit
 
 
@@ -29,7 +29,22 @@ class ViewController: UIViewController {
     
     func updateUI() {
         
-        view.backgroundColor = isOn ? .white : .black
+        let device = AVCaptureDevice.default(for: .video)
+        
+        if let device = device, device.hasTorch {
+            
+            view.backgroundColor = .black
+            do {
+                try device.lockForConfiguration()
+                device.torchMode = isOn ? .on : .off
+                device.unlockForConfiguration()
+            } catch {
+                print(#function, error)
+            }
+            
+        } else {
+            view.backgroundColor = isOn ? .white : .black
+        }
         
     }
     
